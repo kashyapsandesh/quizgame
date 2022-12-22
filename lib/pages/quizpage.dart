@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quizapp/pages/questions.dart';
+import 'package:quizapp/pages/quizbrain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
@@ -15,14 +17,7 @@ class _QuizPageState extends State<QuizPage> {
   //   'Police Arrests the theives',
   //   'Birds lives in nest',
   // ];
-  List<Questions> questionsBanks = [
-    Questions(questionText: 'Milk is Green', questionAnswer: false),
-    Questions(
-        questionText: 'The earth revolves the moon', questionAnswer: false),
-    Questions(questionText: 'Police Arrests the theives', questionAnswer: true),
-  ];
 
-  int questionNumber = 0;
   // List<Icon> scoreKeeper = [
   //   Icon(
   //     Icons.check,
@@ -41,12 +36,32 @@ class _QuizPageState extends State<QuizPage> {
   //     color: Colors.red,
   //   ),
   // ];
-  ElevatedButton answerButton(String bName) {
+  List<Icon> scoreKeeper = [];
+  ElevatedButton answerButton(bool bName) {
     return ElevatedButton(
       onPressed: () {
-        bool correctAnswer = questionsBanks[questionNumber].questionAnswer;
+        bool correctAnswer = quizBrain.getQuestionAnswer();
+        print(correctAnswer);
+
+        if (correctAnswer == true) {
+          scoreKeeper.add(
+            Icon(
+              Icons.check,
+              color: Colors.white,
+            ),
+          );
+          print('user got it true');
+        } else {
+          scoreKeeper.add(
+            Icon(
+              Icons.close,
+              color: Colors.red,
+            ),
+          );
+          print('user got it wrong');
+        }
         setState(() {
-          questionNumber++;
+          quizBrain.nextQuestion();
         });
         // setState(() {
         //   scoreKeeper.add(
@@ -76,7 +91,7 @@ class _QuizPageState extends State<QuizPage> {
       width: double.infinity,
       child: Center(
         child: Text(
-          questionsBanks[questionNumber].questionText,
+          quizBrain.getQuestionText(),
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
       ),
@@ -90,17 +105,18 @@ class _QuizPageState extends State<QuizPage> {
       body: Column(
         children: [
           nContent(),
-          answerButton("True"),
+          answerButton(true),
+          
           const SizedBox(
             height: 10,
           ),
-          answerButton("False"),
+          answerButton(false),
           const SizedBox(
             height: 10,
           ),
           Row(
-              // children: scoreKeeper,
-              )
+            children: scoreKeeper,
+          )
         ],
       ),
     );
